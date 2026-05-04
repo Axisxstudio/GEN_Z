@@ -1,0 +1,2 @@
+DROP POLICY IF EXISTS "Public read product images" ON storage.objects;
+CREATE POLICY "Public read product images" ON storage.objects FOR SELECT USING (bucket_id = 'product-images' AND auth.role() = 'anon' IS NOT NULL);
