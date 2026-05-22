@@ -70,7 +70,7 @@ const Index = () => {
               key={currentImageIndex}
               src={heroImages[currentImageIndex]}
               alt="GEN-Z streetwear hero"
-              className="absolute inset-0 h-full w-full object-cover object-center sm:object-right"
+              className="absolute inset-0 h-full w-full object-cover object-center sm:object-top"
               initial={{ opacity: 0, scale: 1.12 }}
               animate={{ opacity: 1, scale: 1.0 }}
               exit={{ opacity: 0 }}
