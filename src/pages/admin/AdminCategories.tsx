@@ -62,7 +62,7 @@ const AdminCategories = () => {
   };
 
   return (
-    <div className="p-8 max-w-3xl">
+    <div className="max-w-3xl">
       <h1 className="font-display text-3xl font-bold">Categories</h1>
 
       <div className="mt-6 flex gap-2">

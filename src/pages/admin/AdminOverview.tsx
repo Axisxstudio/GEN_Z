@@ -31,7 +31,7 @@ const AdminOverview = () => {
   ];
 
   return (
-    <div className="p-8 max-w-6xl">
+    <div className="max-w-6xl">
       <h1 className="font-display text-3xl font-bold">Overview</h1>
       <p className="text-muted-foreground mt-1">Quick snapshot of your store.</p>
 

@@ -1,18 +1,21 @@
 import type { MouseEvent } from "react";
 import { Link } from "react-router-dom";
 import { ShoppingBag } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { formatPrice } from "@/lib/brand";
 import { useCart } from "@/store/cart";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/types/shop";
+import { EASE_OUT_EXPO } from "@/lib/motion";
 
-type Props = { product: Product };
+type Props = { product: Product; index?: number };
 
-export const ProductCard = ({ product }: Props) => {
+export const ProductCard = ({ product, index = 0 }: Props) => {
   const addItem = useCart((s) => s.addItem);
   const setOpen = useCart((s) => s.setOpen);
+  const prefersReduced = useReducedMotion();
   const price = product.discount_price ?? product.price;
   const hasDiscount = product.discount_price != null && product.discount_price < product.price;
   const image = product.images?.[0] ?? "/placeholder.svg";
@@ -32,7 +35,20 @@ export const ProductCard = ({ product }: Props) => {
   };
 
   return (
-    <div className="product-card group relative flex min-w-0 flex-col bg-gradient-card border border-border/60 rounded-lg sm:rounded-xl overflow-hidden transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_20px_60px_-20px_hsl(var(--primary)/0.4)]">
+    <motion.div
+      initial={{ opacity: 0, y: prefersReduced ? 0 : 28 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{
+        duration: 0.55,
+        delay: prefersReduced ? 0 : Math.min(index * 0.07, 0.35),
+        ease: EASE_OUT_EXPO,
+      }}
+      whileHover={prefersReduced ? {} : { y: -5, scale: 1.012 }}
+      whileTap={prefersReduced ? {} : { scale: 0.98 }}
+      style={{ willChange: "transform, opacity" }}
+      className="product-card group relative flex min-w-0 flex-col bg-gradient-card border border-border/60 rounded-lg sm:rounded-xl overflow-hidden"
+    >
       <Link
         to={`/product/${product.slug}`}
         className={cn(
@@ -47,14 +63,24 @@ export const ProductCard = ({ product }: Props) => {
             className="product-card-img absolute inset-0 h-full w-full object-cover"
           />
           {hasDiscount && (
-            <span className="absolute left-2 top-2 bg-gradient-red px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-primary-foreground sm:left-3 sm:top-3 sm:px-2.5 sm:py-1 sm:text-[10px]">
+            <motion.span
+              initial={{ opacity: 0, scale: 0.7 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.3, ease: EASE_OUT_EXPO }}
+              className="absolute left-2 top-2 bg-gradient-red px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-primary-foreground sm:left-3 sm:top-3 sm:px-2.5 sm:py-1 sm:text-[10px]"
+            >
               SALE
-            </span>
+            </motion.span>
           )}
           {product.is_new_arrival && (
-            <span className="absolute right-2 top-2 glass px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest sm:right-3 sm:top-3 sm:px-2.5 sm:py-1 sm:text-[10px]">
+            <motion.span
+              initial={{ opacity: 0, scale: 0.7 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.25, duration: 0.3, ease: EASE_OUT_EXPO }}
+              className="absolute right-2 top-2 glass px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest sm:right-3 sm:top-3 sm:px-2.5 sm:py-1 sm:text-[10px]"
+            >
               NEW
-            </span>
+            </motion.span>
           )}
           {product.stock_status === "out_of_stock" && (
             <div className="absolute inset-0 grid place-items-center bg-background/70 backdrop-blur-sm">
@@ -68,7 +94,7 @@ export const ProductCard = ({ product }: Props) => {
             <p className="text-[9px] uppercase tracking-widest text-muted-foreground sm:text-[10px]">
               {product.categories?.name ?? "GEN-Z"}
             </p>
-            <p className="mt-0.5 line-clamp-2 text-sm font-medium transition-colors duration-200 ease-out group-hover:text-primary sm:mt-1 sm:text-base">
+            <p className="mt-0.5 line-clamp-2 text-sm font-medium hover:text-primary sm:mt-1 sm:text-base">
               {product.name}
             </p>
           </div>
@@ -84,18 +110,20 @@ export const ProductCard = ({ product }: Props) => {
             </span>
           )}
         </div>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          onClick={handleAdd}
-          className="h-8 w-8 shrink-0 text-foreground hover:bg-secondary hover:text-primary sm:h-9 sm:w-9"
-          disabled={product.stock_status === "out_of_stock"}
-          aria-label={`Add ${product.name} to cart`}
-        >
-          <ShoppingBag className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-        </Button>
+        <motion.div whileTap={{ scale: 0.85 }} transition={{ duration: 0.15 }}>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={handleAdd}
+            className="h-8 w-8 shrink-0 text-foreground hover:bg-secondary hover:text-primary sm:h-9 sm:w-9"
+            disabled={product.stock_status === "out_of_stock"}
+            aria-label={`Add ${product.name} to cart`}
+          >
+            <ShoppingBag className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+          </Button>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 };

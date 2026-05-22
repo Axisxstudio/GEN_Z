@@ -16,7 +16,7 @@ export function CategoryBannerMedia({ category, className }: Props) {
         src={src}
         alt=""
         className={cn(
-          "absolute inset-0 h-full w-full object-cover transition-transform duration-400 ease-out group-hover:scale-[1.03]",
+          "absolute inset-0 h-full w-full object-cover",
           className,
         )}
         loading="lazy"

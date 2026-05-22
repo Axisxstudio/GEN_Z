@@ -33,17 +33,17 @@ const AdminProducts = () => {
   };
 
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between mb-8">
+    <div>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="font-display text-3xl font-bold">Products</h1>
           <p className="text-muted-foreground mt-1">{products.length} total</p>
         </div>
-        <Button asChild variant="hero"><Link to="/admin/products/new"><Plus className="h-4 w-4" /> New product</Link></Button>
+        <Button asChild variant="hero" className="w-full sm:w-auto justify-center"><Link to="/admin/products/new"><Plus className="h-4 w-4 mr-2" /> New product</Link></Button>
       </div>
 
-      <div className="border border-border rounded-xl overflow-hidden bg-card">
-        <table className="w-full text-sm">
+      <div className="border border-border rounded-xl overflow-x-auto bg-card">
+        <table className="w-full text-sm min-w-[700px]">
           <thead className="bg-secondary text-xs uppercase tracking-widest text-muted-foreground">
             <tr>
               <th className="text-left px-4 py-3">Product</th>

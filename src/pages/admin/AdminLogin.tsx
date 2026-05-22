@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,14 +8,14 @@ import { toast } from "sonner";
 import { Loader2, Lock } from "lucide-react";
 
 const AdminLogin = () => {
-  const { user, isAdmin, loading, signIn, signUp } = useAuth();
+  const { user, isAdmin, canAccessAdmin, loading, signIn, signUp, adminDemo } = useAuth();
   const location = useLocation();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
 
-  if (!loading && user && isAdmin) {
+  if (!loading && canAccessAdmin) {
     const to = (location.state as any)?.from ?? "/admin";
     return <Navigate to={to} replace />;
   }
@@ -35,7 +35,7 @@ const AdminLogin = () => {
   };
 
   return (
-    <div className="min-h-screen grid place-items-center bg-background px-4">
+    <div className="min-h-screen grid place-items-center px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="mx-auto h-12 w-12 rounded-xl bg-gradient-red grid place-items-center mb-4 glow-red">
@@ -65,10 +65,22 @@ const AdminLogin = () => {
           >
             {mode === "signin" ? "Need an account? Create one" : "Already have an account? Sign in"}
           </button>
+          
           {user && !isAdmin && (
             <p className="text-xs text-amber-400 text-center">
               Signed in but no admin role. Contact site owner to grant access.
             </p>
+          )}
+
+          {adminDemo && (
+            <div className="border border-primary/20 bg-primary/5 p-3.5 rounded-lg text-center space-y-2 mt-4">
+              <p className="text-xs text-muted-foreground">
+                Local development bypass is active. You can preview the dashboard without any credentials.
+              </p>
+              <Button type="button" variant="outline" size="sm" className="w-full text-xs" asChild>
+                <Link to="/admin">Enter Demo Dashboard</Link>
+              </Button>
+            </div>
           )}
         </form>
       </div>

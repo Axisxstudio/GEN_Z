@@ -132,7 +132,7 @@ const AdminProductForm = () => {
   };
 
   return (
-    <div className="p-8 max-w-4xl">
+    <div className="max-w-4xl">
       <Link to="/admin/products" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary mb-4">
         <ChevronLeft className="h-4 w-4" /> Back
       </Link>

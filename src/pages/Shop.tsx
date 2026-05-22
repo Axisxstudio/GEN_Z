@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { useSearchParams, Link } from "react-router-dom";
 import { Search, SlidersHorizontal } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -8,28 +8,66 @@ import { Slider } from "@/components/ui/slider";
 import { ProductCard } from "@/components/shop/ProductCard";
 import { useCategories, useProducts } from "@/hooks/useShop";
 import { RevealOnView } from "@/components/motion/RevealOnView";
+import { formatPrice } from "@/lib/brand";
 
 const SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
 
 const Shop = () => {
   const [params, setParams] = useSearchParams();
-  const [search, setSearch] = useState(params.get("q") ?? "");
+  const [inputValue, setInputValue] = useState(params.get("q") ?? "");
+  const [searchQuery, setSearchQuery] = useState(params.get("q") ?? "");
   const [size, setSize] = useState<string | undefined>();
   const [price, setPrice] = useState<[number, number]>([0, 30000]);
   const [sort, setSort] = useState<"newest" | "price_asc" | "price_desc">("newest");
   const [showFilters, setShowFilters] = useState(false);
+  const [showRecommendations, setShowRecommendations] = useState(false);
+
+  const qParam = params.get("q") ?? "";
+
+  // Keep search input and query synchronized with URL search parameter changes (e.g. browser back/forward or routing)
+  useEffect(() => {
+    setInputValue(qParam);
+    setSearchQuery(qParam);
+  }, [qParam]);
 
   const categorySlug = params.get("category") ?? undefined;
 
   const { data: categories = [] } = useCategories();
   const { data: products = [], isLoading } = useProducts({
     categorySlug,
-    search: search || undefined,
+    search: searchQuery || undefined,
     minPrice: price[0],
     maxPrice: price[1],
     size,
     sort,
   });
+
+  const { data: recommendedProducts = [] } = useProducts({
+    search: inputValue || undefined,
+    limit: 5,
+  });
+
+  const handleSearchChange = (val: string) => {
+    setInputValue(val);
+    setShowRecommendations(true);
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSearchQuery(inputValue);
+    const next = new URLSearchParams(params);
+    if (inputValue) next.set("q", inputValue); else next.delete("q");
+    setParams(next, { replace: true });
+    setShowRecommendations(false);
+  };
+
+  const handleViewAll = () => {
+    setSearchQuery(inputValue);
+    const next = new URLSearchParams(params);
+    if (inputValue) next.set("q", inputValue); else next.delete("q");
+    setParams(next, { replace: true });
+    setShowRecommendations(false);
+  };
 
   const setCat = (slug?: string) => {
     const next = new URLSearchParams(params);
@@ -48,11 +86,80 @@ const Shop = () => {
       </header>
 
       {/* Top bar */}
-      <div className="flex flex-wrap gap-3 items-center mb-6">
-        <div className="relative flex-1 min-w-[220px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search products…" className="pl-9 bg-card border-border" />
-        </div>
+      <div className="flex flex-wrap gap-3 items-center mb-6 relative">
+        {showRecommendations && inputValue.trim().length > 0 && (
+          <div className="fixed inset-0 z-30" onClick={() => setShowRecommendations(false)} />
+        )}
+        <form onSubmit={handleSearchSubmit} className="relative flex-1 min-w-[220px] z-40">
+          <button type="submit" className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground hover:text-primary transition-colors outline-none">
+            <Search className="h-4 w-4" />
+          </button>
+          <Input
+            value={inputValue}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            onFocus={() => setShowRecommendations(true)}
+            placeholder="Search products…"
+            className="pl-9 bg-card border-border"
+          />
+          {showRecommendations && inputValue.trim().length > 0 && (
+            <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-border rounded-xl shadow-elegant overflow-hidden max-h-[340px] overflow-y-auto glass-strong animate-in fade-in slide-in-from-top-2 duration-200">
+              <div className="p-2 space-y-1">
+                {recommendedProducts.length === 0 ? (
+                  <p className="text-xs text-muted-foreground p-3 text-center">No recommendations found for "{inputValue}"</p>
+                ) : (
+                  <>
+                    <div className="px-2.5 py-1.5 text-[9px] uppercase tracking-widest text-muted-foreground font-semibold">
+                      Recommendations
+                    </div>
+                    {recommendedProducts.map((p) => (
+                      <Link
+                        key={p.id}
+                        to={`/product/${p.slug}`}
+                        onClick={() => setShowRecommendations(false)}
+                        className="flex items-center justify-between gap-3 p-2 rounded-lg hover:bg-secondary/60 transition-colors group text-left"
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <img
+                            src={p.images?.[0] ?? "/placeholder.svg"}
+                            alt=""
+                            className="h-10 w-10 rounded-md object-cover bg-secondary shrink-0"
+                          />
+                          <div className="min-w-0">
+                            <p className="text-xs font-medium text-foreground truncate group-hover:text-primary transition-colors">
+                              {p.name}
+                            </p>
+                            <p className="text-[9px] text-muted-foreground uppercase tracking-widest mt-0.5">
+                              {p.categories?.name ?? "Streetwear"}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right shrink-0">
+                          <span className="text-xs font-semibold text-foreground">
+                            {formatPrice(Number(p.discount_price ?? p.price))}
+                          </span>
+                          {p.discount_price != null && (
+                            <p className="text-[10px] text-muted-foreground line-through mt-0.5">
+                              {formatPrice(Number(p.price))}
+                            </p>
+                          )}
+                        </div>
+                      </Link>
+                    ))}
+                    <div className="border-t border-border mt-1 pt-1">
+                      <button
+                        type="button"
+                        onClick={handleViewAll}
+                        className="w-full text-center text-xs font-medium text-primary hover:underline py-2"
+                      >
+                        View all results
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+        </form>
         <Select value={sort} onValueChange={(v: any) => setSort(v)}>
           <SelectTrigger className="w-[180px] bg-card border-border"><SelectValue /></SelectTrigger>
           <SelectContent>

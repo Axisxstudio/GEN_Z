@@ -6,10 +6,13 @@ export const Footer = () => (
   <footer className="border-t border-border/60 mt-24 bg-gradient-to-b from-transparent to-black">
     <div className="container-edge py-16 grid gap-12 md:grid-cols-4">
       <div className="md:col-span-2 max-w-md">
-        <h3 className="font-display text-2xl font-bold">
-          <span className="text-gradient-red">GEN-Z</span>{" "}
-          <span className="text-foreground/70 font-light">/Trinco</span>
-        </h3>
+        <Link to="/" className="inline-block mb-2">
+          <img 
+            src="/logo.png" 
+            alt={BRAND.name} 
+            className="h-10 md:h-12 object-contain mix-blend-lighten [filter:brightness(1.2)]" 
+          />
+        </Link>
         <p className="mt-4 text-muted-foreground text-sm leading-relaxed">
           {BRAND.tagline}. Premium streetwear, perfumes & accessories curated for the new generation in {BRAND.city}.
         </p>

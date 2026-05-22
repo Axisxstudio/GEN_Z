@@ -10,6 +10,8 @@ import { ChevronLeft, ShoppingBag, Check, Heart } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { RevealOnView } from "@/components/motion/RevealOnView";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { staggerContainer, staggerItem, EASE_OUT_EXPO } from "@/lib/motion";
 
 const ProductDetail = () => {
   const { slug } = useParams();
@@ -26,6 +28,7 @@ const ProductDetail = () => {
   const setOpen = useCart((s) => s.setOpen);
   const wishlistToggle = useWishlist((s) => s.toggle);
   const wishlistHas = useWishlist((s) => s.has);
+  const prefersReduced = useReducedMotion();
 
   if (isLoading) return (
     <RevealOnView className="container-edge py-24 text-muted-foreground">Loading…</RevealOnView>
@@ -76,14 +79,25 @@ const ProductDetail = () => {
   };
 
   return (
-    <RevealOnView className="container-edge py-10">
-      <Link to="/shop" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary mb-8">
-        <ChevronLeft className="h-4 w-4" /> Back to shop
-      </Link>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.4 }}
+      className="container-edge py-10"
+    >
+      <motion.div
+        initial={{ opacity: 0, x: -16 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.4, ease: EASE_OUT_EXPO }}
+      >
+        <Link to="/shop" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary mb-8">
+          <ChevronLeft className="h-4 w-4" /> Back to shop
+        </Link>
+      </motion.div>
 
       <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 lg:items-start">
-        {/* Gallery — inset margin on mobile; image fills frame (no gray letterbox) */}
-        <div className="min-w-0 w-full max-w-xl mx-auto lg:max-w-none lg:mx-0">
+        {/* Gallery */}
+        <RevealOnView direction="left" className="min-w-0 w-full max-w-xl mx-auto lg:max-w-none lg:mx-0">
           <div className="mx-3 my-1 sm:mx-4 sm:my-2 md:mx-0 md:my-0">
             <div
               className={cn(
@@ -92,19 +106,34 @@ const ProductDetail = () => {
                 "lg:max-h-[640px] lg:h-[min(56dvh,calc(100dvh-10.5rem))]",
               )}
             >
-              <img
-                src={images[activeImg]}
-                alt={product.name}
-                className="absolute inset-0 h-full w-full object-cover object-center select-none"
-                draggable={false}
-              />
+              <AnimatePresence mode="crossfade" initial={false}>
+                <motion.img
+                  key={activeImg}
+                  src={images[activeImg]}
+                  alt={product.name}
+                  className="absolute inset-0 h-full w-full object-cover object-center select-none"
+                  initial={{ opacity: 0, scale: prefersReduced ? 1 : 1.04 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.45, ease: EASE_OUT_EXPO }}
+                  draggable={false}
+                />
+              </AnimatePresence>
             </div>
           </div>
           {images.length > 1 && (
-            <div className="mt-3 grid grid-cols-5 gap-2">
+            <motion.div
+              variants={staggerContainer}
+              initial="hidden"
+              animate="visible"
+              className="mt-3 grid grid-cols-5 gap-2"
+            >
               {images.map((src, i) => (
-                <button
+                <motion.button
                   key={i}
+                  variants={staggerItem}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   type="button"
                   onClick={() => setActiveImg(i)}
                   className={cn(
@@ -113,144 +142,190 @@ const ProductDetail = () => {
                   )}
                 >
                   <img src={src} alt={`${product.name} ${i + 1}`} className="h-full w-full object-cover" />
-                </button>
+                </motion.button>
               ))}
-            </div>
+            </motion.div>
           )}
-        </div>
+        </RevealOnView>
 
-        {/* Info */}
-        <div className="lg:pl-4">
-          <div className="flex items-start justify-between gap-4">
-            <div className="min-w-0">
-              <p className="text-xs uppercase tracking-widest text-primary">{product.categories?.name}</p>
-              <h1 className="font-display text-3xl md:text-5xl font-bold mt-2">{product.name}</h1>
-            </div>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              className="shrink-0 h-11 w-11 text-muted-foreground hover:text-primary hover:bg-transparent"
-              onClick={handleLike}
-              aria-pressed={liked}
-              aria-label={liked ? "Remove from favourites" : "Add to favourites"}
-            >
-              <Heart className={cn("h-6 w-6 transition-colors", liked && "fill-primary text-primary")} />
-            </Button>
-          </div>
-
-          <div className="mt-5 flex min-w-0 items-baseline gap-3">
-            <span className="font-display text-2xl font-semibold">{formatPrice(price)}</span>
-            {oldPrice && <span className="text-muted-foreground line-through">{formatPrice(oldPrice)}</span>}
-          </div>
-
-          <div className="mt-3 flex items-center gap-2 text-sm">
-            <span className={`h-2 w-2 rounded-full ${inStock ? "bg-emerald-500 shadow-[0_0_10px_rgb(16,185,129)]" : "bg-destructive"}`} />
-            <span className={inStock ? "text-emerald-400" : "text-destructive"}>
-              {inStock ? "In stock" : "Out of stock"}
-            </span>
-          </div>
-
-          {product.description && (
-            <p className="mt-6 text-muted-foreground leading-relaxed">{product.description}</p>
-          )}
-
-          {requiresSize && (
-            <div className="mt-8">
-              <p className="text-xs uppercase tracking-widest text-muted-foreground mb-3">Size</p>
-              <div className="flex flex-wrap gap-2">
-                {product.sizes!.map((s) => (
-                  <button key={s} type="button" onClick={() => setSize(s)} className={`h-11 min-w-11 px-4 text-sm border rounded-md transition-all ${size === s ? "border-primary bg-primary/10 text-primary" : "border-border hover:border-foreground/40"}`}>
-                    {s}
-                  </button>
-                ))}
+        {/* Info Panel — stagger children */}
+        <RevealOnView direction="right" className="lg:pl-4">
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="space-y-0"
+          >
+            {/* Title row */}
+            <motion.div variants={staggerItem} className="flex items-start justify-between gap-4">
+              <div className="min-w-0">
+                <p className="text-xs uppercase tracking-widest text-primary">{product.categories?.name}</p>
+                <h1 className="font-display text-3xl md:text-5xl font-bold mt-2">{product.name}</h1>
               </div>
-            </div>
-          )}
+              <motion.div whileTap={{ scale: 0.8 }} transition={{ type: "spring", stiffness: 400 }}>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="shrink-0 h-11 w-11 text-muted-foreground hover:text-primary hover:bg-transparent"
+                  onClick={handleLike}
+                  aria-pressed={liked}
+                  aria-label={liked ? "Remove from favourites" : "Add to favourites"}
+                >
+                  <motion.div
+                    animate={liked ? { scale: [1, 1.4, 1] } : { scale: 1 }}
+                    transition={{ duration: 0.35 }}
+                  >
+                    <Heart className={cn("h-6 w-6 transition-colors", liked && "fill-primary text-primary")} />
+                  </motion.div>
+                </Button>
+              </motion.div>
+            </motion.div>
 
-          {requiresColor && (
-            <div className="mt-6">
-              <p className="text-xs uppercase tracking-widest text-muted-foreground mb-3">Color</p>
-              <div className="flex flex-wrap gap-2">
-                {product.colors!.map((c) => (
-                  <button key={c} type="button" onClick={() => setColor(c)} className={`h-11 px-4 text-sm border rounded-md inline-flex items-center gap-2 transition-all ${color === c ? "border-primary bg-primary/10 text-primary" : "border-border hover:border-foreground/40"}`}>
-                    {color === c && <Check className="h-3 w-3" />} {c}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
+            {/* Price */}
+            <motion.div variants={staggerItem} className="mt-5 flex min-w-0 items-baseline gap-3">
+              <span className="font-display text-2xl font-semibold">{formatPrice(price)}</span>
+              {oldPrice && <span className="text-muted-foreground line-through">{formatPrice(oldPrice)}</span>}
+            </motion.div>
 
-          <div className="mt-10 flex flex-wrap items-stretch gap-3">
-            {inStock ? (
-              <Button asChild variant="hero" size="xl" className="min-h-14 flex-1 min-w-[200px]">
-                <a href={waBuy} target="_blank" rel="noreferrer">
-                  Buy now
-                </a>
-              </Button>
-            ) : (
-              <Button type="button" variant="hero" size="xl" className="min-h-14 flex-1 min-w-[200px]" disabled>
-                Buy now
-              </Button>
+            {/* Stock status */}
+            <motion.div variants={staggerItem} className="mt-3 flex items-center gap-2 text-sm">
+              <motion.span
+                animate={inStock ? { scale: [1, 1.5, 1], opacity: [0.6, 1, 0.6] } : {}}
+                transition={{ duration: 2, repeat: Infinity }}
+                className={`h-2 w-2 rounded-full ${inStock ? "bg-emerald-500 shadow-[0_0_10px_rgb(16,185,129)]" : "bg-destructive"}`}
+              />
+              <span className={inStock ? "text-emerald-400" : "text-destructive"}>
+                {inStock ? "In stock" : "Out of stock"}
+              </span>
+            </motion.div>
+
+            {/* Description */}
+            {product.description && (
+              <motion.p variants={staggerItem} className="mt-6 text-muted-foreground leading-relaxed">
+                {product.description}
+              </motion.p>
             )}
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              className="h-14 w-14 shrink-0 border-border bg-transparent hover:bg-secondary"
-              onClick={handleAdd}
-              disabled={!inStock}
-              aria-label="Add to cart"
-            >
-              <ShoppingBag className="h-5 w-5" />
-            </Button>
-          </div>
 
-          {/* Spec table */}
-          <dl className="mt-10 grid grid-cols-2 gap-y-3 gap-x-6 text-sm border-t border-border pt-6">
-            {product.material && (<><dt className="text-muted-foreground">Material</dt><dd>{product.material}</dd></>)}
-            {product.fit_type && (<><dt className="text-muted-foreground">Fit</dt><dd>{product.fit_type}</dd></>)}
-            {product.categories?.name && (<><dt className="text-muted-foreground">Category</dt><dd>{product.categories.name}</dd></>)}
-            <dt className="text-muted-foreground">SKU</dt><dd className="font-mono text-xs">{product.id.slice(0, 8).toUpperCase()}</dd>
-          </dl>
-        </div>
+            {/* Sizes */}
+            {requiresSize && (
+              <motion.div variants={staggerItem} className="mt-8">
+                <p className="text-xs uppercase tracking-widest text-muted-foreground mb-3">Size</p>
+                <div className="flex flex-wrap gap-2">
+                  {product.sizes!.map((s) => (
+                    <motion.button
+                      key={s}
+                      type="button"
+                      onClick={() => setSize(s)}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.93 }}
+                      className={`h-11 min-w-11 px-4 text-sm border rounded-md transition-all ${size === s ? "border-primary bg-primary/10 text-primary" : "border-border hover:border-foreground/40"}`}
+                    >
+                      {s}
+                    </motion.button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+
+            {/* Colors */}
+            {requiresColor && (
+              <motion.div variants={staggerItem} className="mt-6">
+                <p className="text-xs uppercase tracking-widest text-muted-foreground mb-3">Color</p>
+                <div className="flex flex-wrap gap-2">
+                  {product.colors!.map((c) => (
+                    <motion.button
+                      key={c}
+                      type="button"
+                      onClick={() => setColor(c)}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.93 }}
+                      className={`h-11 px-4 text-sm border rounded-md inline-flex items-center gap-2 transition-all ${color === c ? "border-primary bg-primary/10 text-primary" : "border-border hover:border-foreground/40"}`}
+                    >
+                      {color === c && <Check className="h-3 w-3" />} {c}
+                    </motion.button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+
+            {/* CTAs */}
+            <motion.div variants={staggerItem} className="mt-10 flex flex-wrap items-stretch gap-3">
+              {inStock ? (
+                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }} className="flex-1 min-w-[200px]">
+                  <Button asChild variant="hero" size="xl" className="min-h-14 w-full">
+                    <a href={waBuy} target="_blank" rel="noreferrer">
+                      Buy now
+                    </a>
+                  </Button>
+                </motion.div>
+              ) : (
+                <Button type="button" variant="hero" size="xl" className="min-h-14 flex-1 min-w-[200px]" disabled>
+                  Buy now
+                </Button>
+              )}
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.92 }}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  className="h-14 w-14 shrink-0 border-border bg-transparent hover:bg-secondary"
+                  onClick={handleAdd}
+                  disabled={!inStock}
+                  aria-label="Add to cart"
+                >
+                  <ShoppingBag className="h-5 w-5" />
+                </Button>
+              </motion.div>
+            </motion.div>
+
+            {/* Spec table */}
+            <motion.dl variants={staggerItem} className="mt-10 grid grid-cols-2 gap-y-3 gap-x-6 text-sm border-t border-border pt-6">
+              {product.material && (<><dt className="text-muted-foreground">Material</dt><dd>{product.material}</dd></>)}
+              {product.fit_type && (<><dt className="text-muted-foreground">Fit</dt><dd>{product.fit_type}</dd></>)}
+              {product.categories?.name && (<><dt className="text-muted-foreground">Category</dt><dd>{product.categories.name}</dd></>)}
+              <dt className="text-muted-foreground">SKU</dt><dd className="font-mono text-xs">{product.id.slice(0, 8).toUpperCase()}</dd>
+            </motion.dl>
+          </motion.div>
+        </RevealOnView>
       </div>
 
       {(relatedLoading || related.length > 0) && (
         <RevealOnView className="mt-16 md:mt-24 border-t border-border pt-12 md:pt-16" delay={0.08}>
           <section aria-labelledby="related-heading">
-          <p className="text-xs uppercase tracking-[0.3em] text-primary">More to explore</p>
-          <div className="mt-2 flex flex-wrap items-end justify-between gap-4">
-            <h2 id="related-heading" className="font-display text-2xl md:text-4xl font-bold">
-              {product.categories?.name ? `More in ${product.categories.name}` : "Related products"}
-            </h2>
-            {product.categories?.slug && (
-              <Link
-                to={`/categories/${product.categories.slug}`}
-                className="text-sm text-muted-foreground hover:text-primary transition-colors"
-              >
-                View category
-              </Link>
-            )}
-          </div>
+            <p className="text-xs uppercase tracking-[0.3em] text-primary">More to explore</p>
+            <div className="mt-2 flex flex-wrap items-end justify-between gap-4">
+              <h2 id="related-heading" className="font-display text-2xl md:text-4xl font-bold">
+                {product.categories?.name ? `More in ${product.categories.name}` : "Related products"}
+              </h2>
+              {product.categories?.slug && (
+                <Link
+                  to={`/categories/${product.categories.slug}`}
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                >
+                  View category
+                </Link>
+              )}
+            </div>
 
-          {relatedLoading ? (
-            <div className="mt-8 grid grid-cols-2 gap-3 min-[400px]:gap-4 md:grid-cols-3 md:gap-5 lg:grid-cols-4">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="aspect-[4/5] rounded-xl bg-card animate-pulse" />
-              ))}
-            </div>
-          ) : (
-            <div className="mt-8 grid grid-cols-2 gap-3 min-[400px]:gap-4 md:grid-cols-3 md:gap-5 lg:grid-cols-4">
-              {related.map((p) => (
-                <ProductCard key={p.id} product={p} />
-              ))}
-            </div>
-          )}
+            {relatedLoading ? (
+              <div className="mt-8 grid grid-cols-2 gap-3 min-[400px]:gap-4 md:grid-cols-3 md:gap-5 lg:grid-cols-4">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="aspect-[4/5] rounded-xl bg-card animate-pulse" />
+                ))}
+              </div>
+            ) : (
+              <div className="mt-8 grid grid-cols-2 gap-3 min-[400px]:gap-4 md:grid-cols-3 md:gap-5 lg:grid-cols-4">
+                {related.map((p, i) => (
+                  <ProductCard key={p.id} product={p} index={i} />
+                ))}
+              </div>
+            )}
           </section>
         </RevealOnView>
       )}
-    </RevealOnView>
+    </motion.div>
   );
 };
 

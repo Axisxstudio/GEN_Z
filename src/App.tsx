@@ -5,6 +5,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { SiteLayout } from "@/components/layout/SiteLayout";
+import { useState } from "react";
+import { AnimatePresence } from "framer-motion";
+import { LoadingScreen } from "@/components/ui/LoadingScreen";
 import Index from "./pages/Index";
 import Shop from "./pages/Shop";
 import ProductDetail from "./pages/ProductDetail";
@@ -22,40 +25,49 @@ import AdminCategories from "./pages/admin/AdminCategories";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner theme="dark" />
-      <BrowserRouter>
-        <AuthProvider>
-          <Routes>
-            <Route element={<SiteLayout />}>
-              <Route path="/" element={<Index />} />
-              <Route path="/shop" element={<Shop />} />
-              <Route path="/product/:slug" element={<ProductDetail />} />
-              <Route path="/categories" element={<Categories />} />
-              <Route path="/categories/:slug" element={<Categories />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/favourites" element={<Favourites />} />
-            </Route>
+const App = () => {
+  const [isLoading, setIsLoading] = useState(true);
 
-            <Route path="/admin/login" element={<AdminLogin />} />
-            <Route path="/admin" element={<AdminLayout />}>
-              <Route index element={<AdminOverview />} />
-              <Route path="products" element={<AdminProducts />} />
-              <Route path="products/new" element={<AdminProductForm />} />
-              <Route path="products/:id" element={<AdminProductForm />} />
-              <Route path="categories" element={<AdminCategories />} />
-            </Route>
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner theme="dark" />
+        <BrowserRouter>
+          <AuthProvider>
+            <AnimatePresence mode="wait">
+              {isLoading && <LoadingScreen key="loading" onComplete={() => setIsLoading(false)} />}
+            </AnimatePresence>
+            <div className="min-h-screen">
+              <Routes>
+                <Route element={<SiteLayout />}>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/shop" element={<Shop />} />
+                  <Route path="/product/:slug" element={<ProductDetail />} />
+                  <Route path="/categories" element={<Categories />} />
+                  <Route path="/categories/:slug" element={<Categories />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/favourites" element={<Favourites />} />
+                </Route>
 
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </AuthProvider>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+                <Route path="/admin/login" element={<AdminLogin />} />
+                <Route path="/admin" element={<AdminLayout />}>
+                  <Route index element={<AdminOverview />} />
+                  <Route path="products" element={<AdminProducts />} />
+                  <Route path="products/new" element={<AdminProductForm />} />
+                  <Route path="products/:id" element={<AdminProductForm />} />
+                  <Route path="categories" element={<AdminCategories />} />
+                </Route>
+
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </div>
+          </AuthProvider>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
