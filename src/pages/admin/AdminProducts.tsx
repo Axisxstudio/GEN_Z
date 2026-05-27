@@ -1,5 +1,6 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
+import { useProducts } from "@/hooks/useShop";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -13,17 +14,7 @@ import { RevealOnView } from "@/components/motion/RevealOnView";
 
 const AdminProducts = () => {
   const qc = useQueryClient();
-  const { data: products = [], isLoading } = useQuery({
-    queryKey: ["admin-products"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("products")
-        .select("*, categories(name)")
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return data;
-    },
-  });
+  const { data: products = [], isLoading } = useProducts();
 
   const remove = async (id: string) => {
     const { error } = await supabase.from("products").delete().eq("id", id);
