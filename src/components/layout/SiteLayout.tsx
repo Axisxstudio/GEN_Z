@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 import { CartDrawer } from "@/components/cart/CartDrawer";
+import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
 import { pageVariants } from "@/lib/motion";
 
 export const SiteLayout = () => {
@@ -32,6 +33,7 @@ export const SiteLayout = () => {
       </main>
       <Footer />
       <CartDrawer />
+      <WhatsAppButton />
     </div>
   );
 };
