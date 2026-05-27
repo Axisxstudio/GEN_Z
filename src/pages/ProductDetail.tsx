@@ -77,11 +77,26 @@ const ProductDetail = () => {
   };
 
   return (
-    <div className="bg-background text-white min-h-screen pt-20">
-      <div className="container-edge py-4 md:py-10 flex flex-col lg:flex-row gap-10 lg:gap-20 relative">
+    <div className="bg-background text-white min-h-screen pt-24 pb-12">
+      <div className="container-edge relative">
         
-        {/* Left Side - Image Gallery (Scrollable on desktop, stacked on mobile) */}
-        <div className="w-full lg:w-3/5 space-y-4 md:space-y-6 order-1">
+        {/* Professional Top Left Back Navigation */}
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, ease: EASE_OUT_EXPO }}
+          className="mb-8 lg:mb-12"
+        >
+          <Link to="/shop" className="inline-flex items-center gap-3 text-[10px] text-white/50 hover:text-white uppercase tracking-[0.2em] transition-all hover-trigger group">
+            <ChevronLeft className="h-4 w-4 transition-transform group-hover:-translate-x-2" /> 
+            <span>Archive</span>
+          </Link>
+        </motion.div>
+
+        <div className="flex flex-col lg:flex-row gap-10 lg:gap-20 relative">
+          
+          {/* Left Side - Image Gallery (Scrollable on desktop, stacked on mobile) */}
+          <div className="w-full lg:w-3/5 space-y-4 md:space-y-6 order-1">
           {images.map((src, idx) => (
             <motion.div
               key={idx}
@@ -110,9 +125,6 @@ const ProductDetail = () => {
               className="flex flex-col gap-8"
             >
               <motion.div variants={staggerItem}>
-                <Link to="/shop" className="inline-flex items-center gap-2 text-[10px] text-white/50 hover:text-white mb-8 uppercase tracking-widest transition-colors hover-trigger">
-                  <ChevronLeft className="h-3 w-3" /> Archive
-                </Link>
                 <p className="text-[10px] uppercase tracking-[0.2em] text-white/50 mb-4">{product.categories?.name}</p>
                 <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold leading-[0.9] tracking-tighter uppercase break-words">{product.name}</h1>
                 
@@ -221,6 +233,7 @@ const ProductDetail = () => {
           </div>
         </div>
       </div>
+      </div>
 
       {/* Related Products */}
       {(relatedLoading || related.length > 0) && (
@@ -238,13 +251,13 @@ const ProductDetail = () => {
           </div>
 
           {relatedLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-8">
               {Array.from({ length: 4 }).map((_, i) => (
                 <div key={i} className="aspect-[4/5] bg-secondary animate-pulse" />
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-8">
               {related.map((p, i) => (
                 <ProductCard key={p.id} product={p} index={i} />
               ))}

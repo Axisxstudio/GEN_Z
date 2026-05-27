@@ -66,7 +66,7 @@ export const Footer = () => (
             <ShieldCheck className="h-3.5 w-3.5" />
           </Link>
         </div>
-        <p className="text-center sm:text-right">
+        <p className="text-center sm:text-right text-muted-foreground">
           Website developed by{" "}
           <a
             href={STUDIO.url}
@@ -75,15 +75,6 @@ export const Footer = () => (
             className="font-medium text-foreground/90 underline-offset-4 transition-colors duration-200 ease-out hover:text-primary hover:underline"
           >
             {STUDIO.name}
-          </a>
-          <span className="text-muted-foreground/80"> · </span>
-          <a
-            href={STUDIO.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="transition-colors duration-200 ease-out hover:text-primary"
-          >
-            {STUDIO.domain}
           </a>
         </p>
       </div>
