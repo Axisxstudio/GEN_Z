@@ -18,7 +18,7 @@ export const ProductCard = ({ product, index = 0 }: Props) => {
   const prefersReduced = useReducedMotion();
   const price = product.discount_price ?? product.price;
   const hasDiscount = product.discount_price != null && product.discount_price < product.price;
-  const image = product.images?.[0] ?? "/placeholder.svg";
+  const image = product.images?.[0] ?? "/logo.png";
 
   const handleAdd = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();

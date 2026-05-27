@@ -54,7 +54,7 @@ const AdminProducts = () => {
               <tr key={p.id} className="border-t border-border">
                 <td className="px-4 py-3">
                   <div className="flex items-center gap-3">
-                    <img src={p.images?.[0] ?? "/placeholder.svg"} alt={p.name} className="h-12 w-12 rounded-md object-cover bg-secondary" />
+                    <img src={p.images?.[0] ?? "/logo.png"} alt={p.name} className="h-12 w-12 rounded-md object-cover bg-secondary" />
                     <div>
                       <p className="font-medium">{p.name}</p>
                       <p className="text-xs text-muted-foreground font-mono">/{p.slug}</p>

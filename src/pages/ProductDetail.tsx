@@ -45,7 +45,7 @@ const ProductDetail = () => {
 
   const price = Number(product.discount_price ?? product.price);
   const oldPrice = product.discount_price != null ? Number(product.price) : null;
-  const images = product.images?.length ? product.images : ["/placeholder.svg"];
+  const images = product.images?.length ? product.images : ["/logo.png"];
   const inStock = product.stock_status !== "out_of_stock";
   const requiresSize = (product.sizes?.length ?? 0) > 0;
   const requiresColor = (product.colors?.length ?? 0) > 0;

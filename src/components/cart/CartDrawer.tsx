@@ -85,7 +85,7 @@ export const CartDrawer = () => {
                       className="flex gap-3 pb-4 border-b border-border/60 last:border-0 overflow-hidden"
                     >
                       <Link to={`/product/${i.slug}`} onClick={() => setOpen(false)} className="h-20 w-20 rounded-md overflow-hidden bg-secondary shrink-0">
-                        <img src={i.image ?? "/placeholder.svg"} alt={i.name} className="h-full w-full object-cover" />
+                        <img src={i.image ?? "/logo.png"} alt={i.name} className="h-full w-full object-cover" />
                       </Link>
                       <div className="flex-1 min-w-0">
                         <Link to={`/product/${i.slug}`} onClick={() => setOpen(false)} className="font-medium text-sm hover:text-primary line-clamp-1">{i.name}</Link>

@@ -120,7 +120,7 @@ const Shop = () => {
                       >
                         <div className="flex items-center gap-3 min-w-0">
                           <img
-                            src={p.images?.[0] ?? "/placeholder.svg"}
+                            src={p.images?.[0] ?? "/logo.png"}
                             alt=""
                             className="h-10 w-10 rounded-md object-cover bg-secondary shrink-0"
                           />

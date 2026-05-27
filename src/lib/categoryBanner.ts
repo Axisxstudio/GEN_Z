@@ -23,5 +23,5 @@ export function categoryBannerSrc(category: Pick<Category, "slug" | "image_url">
   const remote = category.image_url?.trim();
   if (remote) return remote;
   const slug = (category.slug ?? "").toLowerCase();
-  return DEFAULT_BANNERS[slug] ?? "/placeholder.svg";
+  return DEFAULT_BANNERS[slug] ?? "/logo.png";
 }
