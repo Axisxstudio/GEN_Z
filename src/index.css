@@ -56,26 +56,37 @@
   }
 
   /* Force dark scheme — premium streetwear is dark */
-  .dark { color-scheme: dark; }
+  .dark {
+    color-scheme: dark;
+  }
 }
 
 @layer base {
-  * { @apply border-border; }
-  html { color-scheme: dark; }
+  * {
+    @apply border-border;
+  }
+
+  html {
+    color-scheme: dark;
+  }
+
   body {
     @apply text-foreground antialiased;
     font-feature-settings: "ss01", "cv11";
-    background: linear-gradient(-45deg, 
-      hsl(0 0% 2%), 
-      hsl(0 100% 10%), 
-      hsl(0 0% 6%), 
-      hsl(0 100% 15% / 0.8)
-    );
+    background: linear-gradient(-45deg,
+        hsl(0 0% 2%),
+        hsl(0 100% 10%),
+        hsl(0 0% 6%),
+        hsl(0 100% 15% / 0.8));
     background-size: 400% 400%;
     animation: gradientBG 20s ease infinite;
     min-height: 100vh;
   }
-  ::selection { background: hsl(var(--primary) / 0.3); color: hsl(var(--foreground)); }
+
+  ::selection {
+    background: hsl(var(--primary) / 0.3);
+    color: hsl(var(--foreground));
+  }
 
   @media (prefers-reduced-motion: no-preference) {
     html {
@@ -94,22 +105,35 @@
   .glass {
     @apply backdrop-blur-xl bg-background/60 border border-border/60;
   }
+
   .glass-strong {
     @apply backdrop-blur-2xl bg-background/80 border border-border/60;
   }
+
   .text-gradient-red {
     background: var(--gradient-red);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
   }
-  .glow-red { box-shadow: var(--glow-red); }
-  .hover-glow { transition: box-shadow 0.4s var(--ease-smooth), transform 0.4s var(--ease-smooth); }
-  .hover-glow:hover { box-shadow: var(--glow-red); transform: translateY(-2px); }
+
+  .glow-red {
+    box-shadow: var(--glow-red);
+  }
+
+  .hover-glow {
+    transition: box-shadow 0.4s var(--ease-smooth), transform 0.4s var(--ease-smooth);
+  }
+
+  .hover-glow:hover {
+    box-shadow: var(--glow-red);
+    transform: translateY(-2px);
+  }
 
   .product-card-img {
     transition: transform 0.55s var(--ease-smooth), filter 0.45s var(--ease-smooth);
   }
+
   .product-card:hover .product-card-img {
     transform: scale(1.08);
     filter: brightness(1.05) saturate(1.1);
@@ -119,16 +143,20 @@
     .product-card {
       transition: none !important;
     }
+
     .product-card:hover {
       transform: none !important;
     }
+
     .product-card:hover .product-card-img {
       transform: none;
       filter: none;
     }
   }
 
-  .container-edge { @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-10; }
+  .container-edge {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-10;
+  }
 
   .ticker {
     animation: ticker 28s linear infinite;
@@ -136,17 +164,36 @@
 }
 
 @layer utilities {
-  .no-scrollbar::-webkit-scrollbar { display: none; }
-  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
 
 @keyframes ticker {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 @keyframes gradientBG {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }

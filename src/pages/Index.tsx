@@ -94,7 +94,7 @@ const Index = () => {
           <motion.div variants={itemVariants}>
             <HeroDropTyping />
           </motion.div>
-          
+
           <motion.h1
             variants={itemVariants}
             className="font-display text-5xl sm:text-6xl md:text-8xl font-bold leading-[0.95] max-w-4xl"
@@ -102,7 +102,7 @@ const Index = () => {
             The <span className="text-gradient-red">Happiness</span><br />
             of Men <span className="text-foreground/60 font-light italic">&</span> Boys.
           </motion.h1>
-          
+
           <motion.p
             variants={itemVariants}
             className="mt-6 max-w-xl text-base md:text-lg text-muted-foreground"
@@ -110,7 +110,7 @@ const Index = () => {
             Premium streetwear, perfumes & accessories — curated for the new generation.
             Order in seconds via WhatsApp.
           </motion.p>
-          
+
           <motion.div
             variants={itemVariants}
             className="mt-10 flex flex-wrap gap-3"

@@ -7,10 +7,10 @@ export const Footer = () => (
     <div className="container-edge py-16 grid gap-12 md:grid-cols-4">
       <div className="md:col-span-2 max-w-md">
         <Link to="/" className="inline-block mb-2">
-          <img 
-            src="/logo.png" 
-            alt={BRAND.name} 
-            className="h-10 md:h-12 object-contain mix-blend-lighten [filter:brightness(1.2)]" 
+          <img
+            src="/logo.png"
+            alt={BRAND.name}
+            className="h-10 md:h-12 object-contain mix-blend-lighten [filter:brightness(1.2)]"
           />
         </Link>
         <p className="mt-4 text-muted-foreground text-sm leading-relaxed">

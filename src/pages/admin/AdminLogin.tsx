@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import { Loader2, Lock } from "lucide-react";
+import { RevealOnView } from "@/components/motion/RevealOnView";
 
 const AdminLogin = () => {
   const { user, isAdmin, canAccessAdmin, loading, signIn, signUp, adminDemo } = useAuth();
@@ -36,7 +37,7 @@ const AdminLogin = () => {
 
   return (
     <div className="min-h-screen grid place-items-center px-4">
-      <div className="w-full max-w-md">
+      <RevealOnView className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="mx-auto h-12 w-12 rounded-xl bg-gradient-red grid place-items-center mb-4 glow-red">
             <Lock className="h-5 w-5 text-primary-foreground" />
@@ -83,7 +84,7 @@ const AdminLogin = () => {
             </div>
           )}
         </form>
-      </div>
+      </RevealOnView>
     </div>
   );
 };

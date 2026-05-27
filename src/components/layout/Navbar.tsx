@@ -49,10 +49,10 @@ export const Navbar = () => {
     >
       <div className="container-edge h-16 md:h-20 flex items-center justify-between gap-6">
         <Link to="/" className="flex items-center gap-2 group">
-          <img 
-            src="/logo.png" 
-            alt={BRAND.name} 
-            className="h-10 md:h-14 object-contain mix-blend-lighten [filter:brightness(1.2)]" 
+          <img
+            src="/logo.png"
+            alt={BRAND.name}
+            className="h-10 md:h-14 object-contain mix-blend-lighten [filter:brightness(1.2)]"
           />
         </Link>
 

@@ -9,6 +9,7 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger
 } from "@/components/ui/alert-dialog";
+import { RevealOnView } from "@/components/motion/RevealOnView";
 
 const AdminProducts = () => {
   const qc = useQueryClient();
@@ -33,7 +34,7 @@ const AdminProducts = () => {
   };
 
   return (
-    <div>
+    <RevealOnView>
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="font-display text-3xl font-bold">Products</h1>
@@ -101,7 +102,7 @@ const AdminProducts = () => {
           </tbody>
         </table>
       </div>
-    </div>
+    </RevealOnView>
   );
 };
 

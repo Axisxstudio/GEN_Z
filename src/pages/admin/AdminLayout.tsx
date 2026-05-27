@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Navigate, NavLink, Outlet, useLocation } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import { pageVariants } from "@/lib/motion";
 import { LayoutDashboard, Package, Tag, LogOut, Loader2, ExternalLink, Menu, X } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
@@ -139,7 +141,19 @@ const AdminLayout = () => {
 
       {/* Main Content Area */}
       <main className="flex-1 overflow-y-auto min-h-0 focus:outline-none p-4 sm:p-6 md:p-8">
-        <Outlet />
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={location.pathname}
+            variants={pageVariants}
+            initial="initial"
+            animate="enter"
+            exit="exit"
+            style={{ willChange: "opacity, transform" }}
+            className="h-full"
+          >
+            <Outlet />
+          </motion.div>
+        </AnimatePresence>
       </main>
     </div>
   );

@@ -9,6 +9,7 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger
 } from "@/components/ui/alert-dialog";
+import { RevealOnView } from "@/components/motion/RevealOnView";
 
 const slugify = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
@@ -62,7 +63,7 @@ const AdminCategories = () => {
   };
 
   return (
-    <div className="max-w-3xl">
+    <RevealOnView className="max-w-3xl">
       <h1 className="font-display text-3xl font-bold">Categories</h1>
 
       <div className="mt-6 flex gap-2">
@@ -116,7 +117,7 @@ const AdminCategories = () => {
           </ul>
         )}
       </div>
-    </div>
+    </RevealOnView>
   );
 };
 

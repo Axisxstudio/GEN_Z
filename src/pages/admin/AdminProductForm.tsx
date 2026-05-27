@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import { RevealOnView } from "@/components/motion/RevealOnView";
 
 const slugify = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
@@ -132,7 +133,7 @@ const AdminProductForm = () => {
   };
 
   return (
-    <div className="max-w-4xl">
+    <RevealOnView className="max-w-4xl">
       <Link to="/admin/products" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary mb-4">
         <ChevronLeft className="h-4 w-4" /> Back
       </Link>
@@ -220,7 +221,7 @@ const AdminProductForm = () => {
           <Button type="button" variant="outline" onClick={() => nav("/admin/products")}>Cancel</Button>
         </div>
       </form>
-    </div>
+    </RevealOnView>
   );
 };
 

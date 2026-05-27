@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Package, Tag, Sparkles, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { RevealOnView } from "@/components/motion/RevealOnView";
 
 const AdminOverview = () => {
   const { data } = useQuery({
@@ -31,7 +32,7 @@ const AdminOverview = () => {
   ];
 
   return (
-    <div className="max-w-6xl">
+    <RevealOnView className="max-w-6xl">
       <h1 className="font-display text-3xl font-bold">Overview</h1>
       <p className="text-muted-foreground mt-1">Quick snapshot of your store.</p>
 
@@ -49,7 +50,7 @@ const AdminOverview = () => {
         <ActionCard title="Add a new product" desc="Create a new drop with images, sizes & colors." to="/admin/products/new" cta="New product" />
         <ActionCard title="Manage categories" desc="Edit Mens Wear, Kids Wear, Perfumes, Belts." to="/admin/categories" cta="Open categories" />
       </div>
-    </div>
+    </RevealOnView>
   );
 };
 
