@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { Instagram, Facebook, Mail, MapPin, Phone } from "lucide-react";
+import { Instagram, Facebook, Mail, MapPin, Phone, ShieldCheck } from "lucide-react";
 import { BRAND, STUDIO } from "@/lib/brand";
 
 export const Footer = () => (
@@ -60,7 +60,12 @@ export const Footer = () => (
 
     <div className="border-t border-border/60">
       <div className="container-edge py-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-xs text-muted-foreground">
-        <p className="text-center sm:text-left">© {new Date().getFullYear()} {BRAND.fullName}. All rights reserved.</p>
+        <div className="text-center sm:text-left flex items-center justify-center sm:justify-start gap-2">
+          <p>© {new Date().getFullYear()} {BRAND.fullName}. All rights reserved.</p>
+          <Link to="/admin" className="text-muted-foreground/30 hover:text-primary transition-colors duration-200 ease-out" aria-label="Admin Login">
+            <ShieldCheck className="h-3.5 w-3.5" />
+          </Link>
+        </div>
         <p className="text-center sm:text-right">
           Website developed by{" "}
           <a
