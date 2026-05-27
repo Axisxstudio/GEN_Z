@@ -23,18 +23,23 @@ export const WhatsAppButton = () => {
             initial={{ opacity: 0, y: 10, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.9 }}
-            className="bg-card border border-border shadow-2xl p-4 rounded-2xl rounded-br-sm relative max-w-[200px]"
+            className="flex flex-col items-end gap-1.5 relative max-w-[240px]"
           >
             <button
               onClick={() => setShowBubble(false)}
-              className="absolute top-2 right-2 text-muted-foreground hover:text-foreground transition-colors"
+              className="absolute -top-3 -right-2 bg-card border border-border text-muted-foreground hover:text-foreground transition-colors rounded-full p-1 shadow-sm z-10 hover-trigger"
               aria-label="Close message"
             >
               <X className="h-3 w-3" />
             </button>
-            <p className="text-xs font-medium text-foreground pr-4 leading-relaxed">
-              Hi there 👋<br/>Need help? Chat with us!
-            </p>
+            
+            <div className="bg-[whitesmoke] border border-white/10 shadow-xl py-2.5 px-4 rounded-2xl rounded-br-sm text-xs font-medium text-black inline-block">
+              Hi there 👋
+            </div>
+            
+            <div className="bg-[whitesmoke] border border-white/10 shadow-xl py-2.5 px-4 rounded-2xl rounded-br-sm rounded-tr-sm text-xs font-medium text-black inline-block">
+              Need help? Chat with us!
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
